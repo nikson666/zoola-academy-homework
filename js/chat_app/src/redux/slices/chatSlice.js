@@ -18,8 +18,9 @@ const chatSlice = createSlice({
 
 export const addChatMembersThunk = createAsyncThunk(
   'addMembers/api/chat/:chatId/members',
-  async (paramsForAddMembers) => {
-    const { chatId, authToken, members } = paramsForAddMembers;
+  async (paramsForAddMembers, { getState }) => {
+    const { authToken } = getState().auth.auth;
+    const { chatId, members } = paramsForAddMembers;
     await chatServices.addChatMembers(chatId, authToken, members);
   }
 );
