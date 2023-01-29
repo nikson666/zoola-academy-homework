@@ -17,5 +17,9 @@ export const chatServices = {
   getChatById: async (chatId, authToken) => {
     const response = await query(`/api/chats/${chatId}`, 'GET', authToken);
     return response;
+  },
+  getUserChats: async (userId, authToken) => {
+    const response = await query(`/api/users/${userId}/chats`, 'GET', authToken);
+    return response;
   }
 };

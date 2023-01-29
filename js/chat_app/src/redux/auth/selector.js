@@ -11,7 +11,7 @@ const authSelectors = {
   getLogin,
   getError,
   getAuthToken,
-  getAuthUserId
+  getAuthUserId,
 };
 
 export default authSelectors;
