@@ -1,14 +1,18 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
 import { useSelector } from 'react-redux';
 import { Header } from './Header';
 import { UserModal } from '../modals/userForm';
 import { ChatModal } from '../modals/ChatForm';
-import ChatWindow from './ChatWindow/ChatWindow';
+import { MembersListModal } from '../modals/ChatMembersForm';
+import { ChatList } from './ChatList';
+import authSelectors from '../redux/auth/selector';
+import { ChatWindow } from './ChatWindow';
 
 function Chat() {
-  const isAdmin = useSelector((state) => state.auth.auth.isAdmin);
+  const isAdmin = useSelector(authSelectors.getAdmin);
 
   return (
     <Box
@@ -28,22 +32,24 @@ function Chat() {
           <Box
             sx={{
               width: '400px',
-              borderRight: '1px solid',
-              pr: '10px',
               height: '100%'
             }}
           >
             {isAdmin ? <UserModal /> : null}
             <ChatModal />
+            <Divider />
+            <ChatList />
           </Box>
           <Box
             sx={{
               width: '100%',
-              borderRight: '1px solid',
               p: '0 10px',
               height: '100%'
             }}
           >
+            <Box display="flex" justifyContent="flex-end">
+              <MembersListModal />
+            </Box>
             <ChatWindow />
           </Box>
         </Box>

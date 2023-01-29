@@ -1,74 +1,32 @@
+import { query } from './utils/utils';
+
 export const chatServices = {
   createChat: async (title, authToken) => {
-    try {
-      const data = await fetch('/api/chats', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'Auth-Token': authToken
-        },
-        body: JSON.stringify({
-          title
-        })
-      });
-
-      const response = await data.json();
-
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
+    const body = {
+      title
+    };
+    const response = await query('/api/chats', 'POST', authToken, body);
+    return response;
   },
   addChatMembers: async (chatId, authToken, members) => {
-    try {
-      await fetch(`/api/chats/${chatId}/members`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'Auth-Token': authToken
-        },
-        body: JSON.stringify({
-          members
-        })
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const body = {
+      members
+    };
+    return query(`/api/chats/${chatId}/members`, 'POST', authToken, body);
   },
   getChatById: async (chatId, authToken) => {
-    try {
-      const data = await fetch(`/api/chats/${chatId}`, {
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-          'Auth-Token': authToken
-        }
-      });
-
-      const response = await data.json();
-
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await query(`/api/chats/${chatId}`, 'GET', authToken);
+    return response;
+  },
+  getUserChats: async (userId, authToken) => {
+    const response = await query(`/api/users/${userId}/chats`, 'GET', authToken);
+    return response;
   },
   sendMessageByChatId: async (chatId, authToken, message, authorId) => {
-    try {
-      // eslint-disable-next-line no-debugger
-      debugger;
-      await fetch(`/api/chats/${chatId}/messages`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'Auth-Token': authToken
-        },
-        body: {
-          authorId,
-          message
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const body = {
+      authorId,
+      message
+    };
+    return query(`/api/chats/${chatId}/messages`, 'POST', authToken, body);
   }
 };

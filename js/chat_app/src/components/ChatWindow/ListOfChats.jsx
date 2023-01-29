@@ -2,7 +2,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getChatByIdThunk } from '../../redux/slices/chatSlice';
+import { getChatByIdThunk } from '../../redux/chat/slice';
 import Separator from './Separator';
 
 function ListOfChats() {
@@ -14,7 +14,7 @@ function ListOfChats() {
     dispatch(getChatByIdThunk());
   }, []);
 
-  if (arrayOfMessages.length) {
+  if (arrayOfMessages?.length) {
     return (
       <List
         sx={{

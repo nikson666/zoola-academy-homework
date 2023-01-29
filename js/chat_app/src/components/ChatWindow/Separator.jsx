@@ -8,15 +8,14 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import { useDispatch } from 'react-redux';
-import { getUserByIdThunk } from '../../redux/slices/chatSlice';
+import { getUserByIdThunk } from '../../redux/users/slice';
 
 function Separator({ date, authorId, message }) {
   const [user, setUser] = useState();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUserByIdThunk(authorId))
-      .then((res) => setUser(res.payload));
+    dispatch(getUserByIdThunk(authorId)).then((res) => setUser(res.payload));
   }, []);
 
   return (

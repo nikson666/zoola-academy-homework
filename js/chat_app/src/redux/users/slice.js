@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { userServices } from '../../services/userServices';
+import authSelectors from '../auth/selector';
 
 const initialState = {
   allUsers: []
@@ -8,8 +9,7 @@ const initialState = {
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllUsersThunk.fulfilled, (state, action) => {
       state.allUsers = action.payload;
@@ -18,19 +18,16 @@ const usersSlice = createSlice({
 });
 
 export const getAllUsersThunk = createAsyncThunk('getAllUsers/api/users', async (_, { getState }) => {
-  const { authToken } = getState().auth.auth;
+  const authToken = authSelectors.getAuthToken(getState());
 
-  const response = await userServices.getAllUsers(authToken);
-  return response;
+  return userServices.getAllUsers(authToken);
 });
 
 export const createUserThunk = createAsyncThunk(
   'createUser/api/users',
   async (paramsForCreateUser, { dispatch, getState }) => {
-    // eslint-disable-next-line no-debugger
-    debugger;
-    const { authToken } = getState().auth.auth;
-    const { id } = getState().auth.auth.user;
+    const authToken = authSelectors.getAuthToken(getState());
+    const id = authSelectors.getAuthUserId(getState());
     const { username, password } = paramsForCreateUser;
 
     await userServices.createUser(authToken, username, password, id);
@@ -38,5 +35,13 @@ export const createUserThunk = createAsyncThunk(
     dispatch(getAllUsersThunk(authToken));
   }
 );
+
+export const getUserByIdThunk = createAsyncThunk('getUserById/api/users/:userId', async (userId, { getState }) => {
+  const { authToken } = getState().auth.auth;
+
+  const response = await userServices.getUserById(authToken, userId);
+
+  return response;
+});
 
 export default usersSlice;
