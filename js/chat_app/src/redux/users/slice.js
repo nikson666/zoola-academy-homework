@@ -17,31 +17,39 @@ const usersSlice = createSlice({
   }
 });
 
-export const getAllUsersThunk = createAsyncThunk('getAllUsers/api/users', async (_, { getState }) => {
-  const authToken = authSelectors.getAuthToken(getState());
+export const getAllUsersThunk = createAsyncThunk('getAllUsers/api/users', async (_, { getState, rejectWithValue }) => {
+  try {
+    const authToken = authSelectors.getAuthToken(getState());
 
-  return userServices.getAllUsers(authToken);
+    return userServices.getAllUsers(authToken);
+  } catch (error) {
+    if (!error.response) {
+      throw error;
+    }
+
+    return rejectWithValue(error.response.data);
+  }
 });
 
 export const createUserThunk = createAsyncThunk(
   'createUser/api/users',
-  async (paramsForCreateUser, { dispatch, getState }) => {
-    const authToken = authSelectors.getAuthToken(getState());
-    const id = authSelectors.getAuthUserId(getState());
-    const { username, password } = paramsForCreateUser;
+  async (paramsForCreateUser, { dispatch, getState, rejectWithValue }) => {
+    try {
+      const authToken = authSelectors.getAuthToken(getState());
+      const id = authSelectors.getAuthUserId(getState());
+      const { username, password } = paramsForCreateUser;
 
-    await userServices.createUser(authToken, username, password, id);
+      await userServices.createUser(authToken, username, password, id);
 
-    dispatch(getAllUsersThunk(authToken));
+      dispatch(getAllUsersThunk());
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      return rejectWithValue(error.response.data);
+    }
   }
 );
-
-export const getUserByIdThunk = createAsyncThunk('getUserById/api/users/:userId', async (userId, { getState }) => {
-  const { authToken } = getState().auth.auth;
-
-  const response = await userServices.getUserById(authToken, userId);
-
-  return response;
-});
 
 export default usersSlice;

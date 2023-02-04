@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -7,28 +7,39 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import { useDispatch } from 'react-redux';
-import { getUserByIdThunk } from '../../redux/users/slice';
+import { useSelector } from 'react-redux';
+import Image from './Image';
+import usersSelectors from '../../redux/users/selector';
 
 function Separator({ date, authorId, message }) {
-  const [user, setUser] = useState();
-  const dispatch = useDispatch();
+  const allUsers = useSelector(usersSelectors.getAllUsers);
+  const user = allUsers.find((item) => item.id === authorId);
 
-  useEffect(() => {
-    dispatch(getUserByIdThunk(authorId)).then((res) => setUser(res.payload));
-  }, []);
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  };
 
   return (
     <Timeline>
       <TimelineItem>
-        <TimelineOppositeContent color="textSecondary">{message}</TimelineOppositeContent>
+        <TimelineOppositeContent>
+          {message?.attachment
+            ? <Image attachment={message.attachment} />
+            : message.message}
+        </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>
-          <Typography>{user ? user.username : ''}</Typography>
-          <Typography>{Date(date)}</Typography>
+        <TimelineContent color="textSecondary">
+          <Typography>{user ? user.username : null}</Typography>
+          <Typography>
+            {new Date(date).toLocaleDateString('en-GB', options)}
+          </Typography>
         </TimelineContent>
       </TimelineItem>
     </Timeline>

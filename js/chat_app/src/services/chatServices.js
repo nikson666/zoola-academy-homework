@@ -28,5 +28,21 @@ export const chatServices = {
       message
     };
     return query(`/api/chats/${chatId}/messages`, 'POST', authToken, body);
+  },
+  sendUploadsByChatId: async (chatId, authToken, fileObject, authorId) => {
+    const formData = new FormData();
+    formData.append('file', fileObject);
+    try {
+      await fetch(`/api/chats/${chatId}/attachments`, {
+        method: 'POST',
+        headers: {
+          'Auth-Token': authToken
+        },
+        body: formData,
+        authorId
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 };

@@ -9,6 +9,5 @@ export const userServices = {
       adminId
     };
     query('/api/users', 'POST', authToken, body);
-  },
-  getUserById: async (userId, authToken) => query(`/api/users/${userId}`, 'GET', authToken)
+  }
 };

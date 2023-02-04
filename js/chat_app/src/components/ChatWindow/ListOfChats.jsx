@@ -1,18 +1,13 @@
+import React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getChatByIdThunk } from '../../redux/chat/slice';
+import { useSelector } from 'react-redux';
+import chatSelectors from '../../redux/chat/selector';
 import Separator from './Separator';
 
 function ListOfChats() {
-  const { chatData } = useSelector((state) => state.chat);
-  const dispatch = useDispatch();
+  const chatData = useSelector(chatSelectors.getChatData);
   const arrayOfMessages = chatData?.messages;
-
-  useEffect(() => {
-    dispatch(getChatByIdThunk());
-  }, []);
 
   if (arrayOfMessages?.length) {
     return (
@@ -27,7 +22,7 @@ function ListOfChats() {
         {arrayOfMessages.map((message, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <ListItem key={index}>
-            <Separator message={message.message} date={message.date} authorId={message.authorId} />
+            <Separator message={message} date={message.date} authorId={message.authorId} />
           </ListItem>
         ))}
       </List>

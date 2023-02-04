@@ -1,6 +1,6 @@
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import { deepOrange } from '@mui/material/colors';
+import { blue, blueGrey } from '@mui/material/colors';
 import { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -71,11 +71,12 @@ function Header() {
               >
                 <Avatar
                   sx={{
-                    bgcolor: deepOrange[500]
+                    cursor: 'pointer',
+                    bgcolor: `${isAdmin ? blueGrey[500] : blue[500]}`
                   }}
                   onClick={handleOpenWindowLogout}
                 >
-                  {name.slice(0, 1)}
+                  {name.slice(0, 1).toUpperCase()}
                 </Avatar>
               </StyledBadge>
             </Stack>

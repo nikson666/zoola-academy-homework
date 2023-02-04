@@ -56,7 +56,7 @@ export const addChatMembersThunk = createAsyncThunk(
       const response = await chatServices.addChatMembers(chatId, authToken, members);
 
       if (currentChatId === chatId) {
-        dispatch(getChatByIdThunk(response?.id, authToken));
+        await dispatch(getChatByIdThunk(response?.id, authToken));
       }
     } catch (error) {
       if (!error.response) {
@@ -78,14 +78,14 @@ export const createChatThunk = createAsyncThunk(
 
       const response = await chatServices.createChat(title, authToken);
 
-      await dispatch(
-        addChatMembersThunk({
-          chatId: response?.id,
-          members: [authId, ...membersId]
-        })
-      );
+      const paramsForAddMembers = {
+        chatId: response?.id,
+        members: [authId, ...membersId]
+      };
 
-      dispatch(getUsersChatsThunk());
+      await dispatch(addChatMembersThunk(paramsForAddMembers));
+
+      await dispatch(getUsersChatsThunk());
 
       return response;
     } catch (error) {
@@ -136,6 +136,17 @@ export const sendMessageByChatIdThunk = createAsyncThunk(
     const authorId = getState().auth.auth.user.id;
 
     await chatServices.sendMessageByChatId(chatId, authToken, message, authorId);
+  }
+);
+
+export const sendUploadsByChatIdThunk = createAsyncThunk(
+  'sendUploadsByChatId/api/chats/:chatId/attachments',
+  async (fileObject, { getState }) => {
+    const chatId = getState().chat.chatData.id;
+    const { authToken } = getState().auth.auth;
+    const authorId = getState().auth.auth.user.id;
+
+    return chatServices.sendUploadsByChatId(chatId, authToken, fileObject, authorId);
   }
 );
 
